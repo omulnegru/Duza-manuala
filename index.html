@@ -2,33 +2,56 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Depanare duza manuala</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>Desfundare duza manuala</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        html, body { width: 100%; height: 100%; overflow: hidden; background-color: #090d16; color: #ffffff; }
-        body { display: flex; flex-direction: column; position: fixed; }
-        header { background-color: #111827; height: 50px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #1f2937; padding: 0 15px; }
+        
+        /* Blocare zoom forțat din sistemul de operare al telefoanelor */
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden !important; 
+            background-color: #090d16; 
+            color: #ffffff;
+            -webkit-text-size-adjust: none !important;
+            -moz-text-size-adjust: none !important;
+            text-size-adjust: none !important;
+            touch-action: none; /* Dezactivează double-tap zoom */
+        }
+        
+        body { display: flex; flex-direction: column; position: fixed; top:0; left:0; right:0; bottom:0; }
+        
+        header { background-color: #111827; height: 50px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #1f2937; padding: 0 15px; flex-shrink: 0; }
         h1 { font-size: 1rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #9ca3af; }
+        
         .main-container { flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; position: relative; overflow: hidden; }
-        .screen { display: none; width: 100%; height: 100%; padding: 20px; position: absolute; top: 0; left: 0; }
+        
+        .screen { display: none; width: 100%; height: 100%; padding: 20px; position: absolute; top: 0; left: 0; overflow: hidden; }
         .screen.active { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .text-screen { text-align: center; max-width: 600px; margin: 0 auto; }
-        .step-badge { background: #2563eb; color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; }
-        .step-title { font-size: 1.8rem; line-height: 1.5; color: #f3f4f6; font-weight: bold; word-break: break-word; }
-        .image-screen { padding: 5px; height: 100%; width: 100%; justify-content: center; align-items: center; }
-        .img-wrapper { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        .img-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        footer { height: 70px; background-color: #111827; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #1f2937; z-index: 10; }
-        .nav-btn { background-color: #2563eb; color: white; border: none; padding: 14px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; user-select: none; -webkit-tap-highlight-color: transparent; }
-        .nav-btn:disabled { background-color: #374151; cursor: not-allowed; opacity: 0.3; }
+        
+        /* Ecran text - adaptabil la ecrane mici/zoom mari */
+        .text-screen { text-align: center; max-width: 90%; margin: 0 auto; justify-content: center; }
+        .step-badge { background: #2563eb; color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 2vh; text-transform: uppercase; display: inline-block; }
+        
+        /* Folosim vmin pentru text ca să scadă automat dacă ecranul e îngust sau are zoom masiv */
+        .step-title { font-size: 6vmin; max-height: 60vh; line-height: 1.4; color: #f3f4f6; font-weight: bold; word-break: break-word; overflow: hidden; }
+        
+        /* Ecran imagine - Auto-scalare strictă la spațiul rămas */
+        .image-screen { padding: 10px; height: 100%; width: 100%; display: none; justify-content: center; align-items: center; }
+        .img-wrapper { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; max-height: 100%; }
+        .img-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+        
+        footer { height: 70px; background-color: #111827; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #1f2937; flex-shrink: 0; z-index: 10; }
+        .nav-btn { background-color: #2563eb; color: white; border: none; padding: 12px 22px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; user-select: none; -webkit-tap-highlight-color: transparent; }
+        .nav-btn:disabled { background-color: #374151; cursor: not-allowed; opacity: 0.2; }
         .progress-indicator { text-align: center; }
-        .progress-text { font-size: 15px; font-weight: bold; color: #f3f4f6; }
-        .sub-progress { font-size: 11px; color: #6b7280; margin-top: 2px; }
+        .progress-text { font-size: 14px; font-weight: bold; color: #f3f4f6; }
+        .sub-progress { font-size: 10px; color: #6b7280; margin-top: 2px; text-transform: uppercase; }
     </style>
 </head>
 <body>
-    <header><h1>Depanare duza manuala</h1></header>
+    <header><h1>Desfundare duza manuala</h1></header>
     <div class="main-container" id="stage"></div>
     <footer>
         <button class="nav-btn" id="prev-btn" onclick="prevTrack()">Înapoi</button>
@@ -50,7 +73,7 @@
                 div.id = 'sc-' + i;
                 if(sc.type === 'text') {
                     div.className = 'screen text-screen';
-                    div.innerHTML = '<div class="step-badge">Pasul ' + sc.stepNr + '</div><div class="step-title">' + sc.content + '</div>';
+                    div.innerHTML = '<div><div class="step-badge">Pasul ' + sc.stepNr + '</div><div class="step-title">' + sc.content + '</div></div>';
                 } else {
                     div.className = 'screen image-screen';
                     div.innerHTML = '<div class="img-wrapper"><img src="' + sc.content + '" alt="Foto"></div>';
@@ -74,6 +97,9 @@
 
         function nextTrack() { if(activeIndex < screens.length - 1) { activeIndex++; updateDisplay(); } }
         function prevTrack() { if(activeIndex > 0) { activeIndex--; updateDisplay(); } }
+        
+        // Blocare gest de zoom prin atingere multiplă din cod (Safari iOS / Chrome Android)
+        document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
         document.addEventListener('keydown', function(e) { if(e.key === "ArrowRight") nextTrack(); if(e.key === "ArrowLeft") prevTrack(); });
         
         buildHTML();
